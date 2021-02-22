@@ -49,9 +49,16 @@ class YaUploader:
             print(e.response.status_code)
             return False
 
+    def create_folder(self, file_path: str):
+        response = requests.put(
+            url='https://cloud-api.yandex.net/v1/disk/resources/',
+            params={'path': op.basename(file_path), 'overwrite': 'true'},
+            headers={'Authorization': 'OAuth ' + self.token}
+        )
+        response.raise_for_status()
+        return response.status_code
+
 
 if __name__ == '__main__':
     uploader = YaUploader(get_token(TOKEN_PATH))
-    path_file = op.join('1.txt')
-    result = uploader.upload(path_file)
-    print(result)
+    result = uploader.create_folder('new folder')
