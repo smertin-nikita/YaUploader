@@ -58,7 +58,20 @@ class YaUploader:
         response.raise_for_status()
         return response.status_code
 
+    def get_resource_info(self, file_path: str):
+        response = requests.get(
+            url='https://cloud-api.yandex.net/v1/disk/resources/',
+            params={'path': op.basename(file_path)},
+            headers={'Authorization': 'OAuth ' + self.token}
+        )
+        response.raise_for_status()
+
+        data = response.json()
+
+        return data
+
 
 if __name__ == '__main__':
     uploader = YaUploader(get_token(TOKEN_PATH))
-    result = uploader.create_folder('new folder')
+    result = uploader.get_resource_info('new folder')['name']
+    print(result)
